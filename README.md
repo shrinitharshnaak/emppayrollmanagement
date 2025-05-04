@@ -89,7 +89,7 @@ The application will be available at `http://localhost:5000`.
 - **UI Framework**: Custom CSS
 
 ## 📁 Project Structure
-
+   ```bash
 payroll-management/
 ├── src/
 │   ├── static/
@@ -109,7 +109,7 @@ payroll-management/
 ├── tests/
 ├── requirements.txt
 └── README.md
-
+   ```
 
 🔒 Security Features
 Password hashing using bcrypt
