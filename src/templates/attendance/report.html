@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="attendance-report">
-    <h2>Attendance Report</h2>
-    
+<div class="attendance-report-container">
+    <div class="header">
+        <h1>Attendance Report</h1>
+        <p class="subheading">View the Attendance Summary for Selected Period</p>
+    </div>
+
     <div class="report-filters">
-        <form method="GET" class="inline-form">
+        <form method="GET" class="filter-form">
             <div class="form-group">
                 <label for="month">Month:</label>
-                <select name="month" id="month">
+                <select name="month" id="month" class="select-input">
                     {% for m in range(1, 13) %}
                     <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>
                         {{ m }}
@@ -18,62 +21,217 @@
             </div>
             <div class="form-group">
                 <label for="year">Year:</label>
-                <input type="number" id="year" name="year" value="{{ current_year }}" min="2000" max="2099">
+                <input type="number" id="year" name="year" value="{{ current_year }}" min="2000" max="2099" class="input-field">
             </div>
-            <button type="submit" class="btn">Filter</button>
+            <button type="submit" class="btn-filter">Apply Filter</button>
         </form>
     </div>
 
     <div class="report-summary">
         <div class="summary-card">
             <h3>Total Present</h3>
-            <p>{{ attendances|selectattr("status", "equalto", "present")|list|length }}</p>
+            <p class="summary-count">{{ attendances|selectattr("status", "equalto", "present")|list|length }}</p>
         </div>
         <div class="summary-card">
             <h3>Total Absent</h3>
-            <p>{{ attendances|selectattr("status", "equalto", "absent")|list|length }}</p>
+            <p class="summary-count">{{ attendances|selectattr("status", "equalto", "absent")|list|length }}</p>
         </div>
         <div class="summary-card">
             <h3>Half Day</h3>
-            <p>{{ attendances|selectattr("status", "equalto", "half-day")|list|length }}</p>
+            <p class="summary-count">{{ attendances|selectattr("status", "equalto", "half-day")|list|length }}</p>
         </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Employee</th>
-                <th>Date</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Status</th>
-                <th>Duration</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for attendance in attendances %}
-            <tr>
-                <td>{{ attendance.employee.name }}</td>
-                <td>{{ attendance.date.strftime('%Y-%m-%d') }}</td>
-                <td>{{ attendance.time_in.strftime('%H:%M:%S') }}</td>
-                <td>{{ attendance.time_out.strftime('%H:%M:%S') if attendance.time_out else 'Not checked out' }}</td>
-                <td>
-                    <span class="status-badge status-{{ attendance.status }}">
-                        {{ attendance.status }}
-                    </span>
-                </td>
-                <td>
-                    {% if attendance.time_out %}
-                        {% set duration = attendance.time_out - attendance.time_in %}
-                        {{ duration.total_seconds()|int // 3600 }}h
-                        {{ (duration.total_seconds()|int % 3600) // 60 }}m
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="attendance-table-container">
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in attendances %}
+                <tr>
+                    <td>{{ attendance.employee.name }}</td>
+                    <td>{{ attendance.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ attendance.time_in.strftime('%H:%M:%S') }}</td>
+                    <td>{{ attendance.time_out.strftime('%H:%M:%S') if attendance.time_out else 'Not checked out' }}</td>
+                    <td>
+                        <span class="status-badge status-{{ attendance.status }}">
+                            {{ attendance.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if attendance.time_out %}
+                            {% set duration = attendance.time_out - attendance.time_in %}
+                            {{ duration.total_seconds()|int // 3600 }}h
+                            {{ (duration.total_seconds()|int % 3600) // 60 }}m
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .attendance-report-container {
+        background-color: #F9FAFB;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        color: #343A40;
+    }
+
+    .subheading {
+        color: #6C757D;
+        font-size: 1.1rem;
+        margin-top: 5px;
+    }
+
+    .report-filters {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .filter-form {
+        display: inline-flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .select-input, .input-field {
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: 1px solid #CED4DA;
+        font-size: 1rem;
+    }
+
+    .btn-filter {
+        background-color: #007BFF;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-filter:hover {
+        background-color: #0056b3;
+    }
+
+    .report-summary {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background-color: #FFFFFF;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 30%;
+    }
+
+    .summary-card h3 {
+        font-size: 1.2rem;
+        color: #495057;
+    }
+
+    .summary-count {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007BFF;
+    }
+
+    .attendance-table-container {
+        background-color: #FFFFFF;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .attendance-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .attendance-table th, .attendance-table td {
+        padding: 12px;
+        text-align: left;
+        font-size: 1rem;
+    }
+
+    .attendance-table th {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .attendance-table tr:nth-child(even) {
+        background-color: #F7F7F7;
+    }
+
+    .attendance-table tr:hover {
+        background-color: #E0E0E0;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .status-present {
+        background-color: #28A745;
+    }
+
+    .status-absent {
+        background-color: #DC3545;
+    }
+
+    .status-half-day {
+        background-color: #FFC107;
+    }
+</style>
 {% endblock %}

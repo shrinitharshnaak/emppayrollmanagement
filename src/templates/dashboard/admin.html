@@ -2,56 +2,262 @@
 
 {% block content %}
 <div class="admin-dashboard">
-    <h1>Admin Dashboard</h1>
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <h3>Total Employees</h3>
-            <p>{{ stats.total_employees }}</p>
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome back! Here's what's happening today.</p>
         </div>
-        <div class="stat-card">
-            <h3>Today's Attendance</h3>
-            <p>{{ stats.today_attendance }}/{{ stats.total_employees }}</p>
-        </div>
-        <div class="stat-card">
-            <h3>Pending Leaves</h3>
-            <p>{{ stats.pending_leaves }}</p>
-        </div>
-        <div class="stat-card">
-            <h3>Monthly Payroll</h3>
-            <p>${{ stats.monthly_payroll }}</p>
+        <div class="header-actions">
+            <button class="btn-outline" onclick="refreshStats()">
+                <i data-feather="refresh-cw"></i> Refresh
+            </button>
         </div>
     </div>
-    
-    <div class="quick-actions">
-        <h2>Quick Actions</h2>
-        <div class="action-buttons">
-            <a href="{{ url_for('employee.add') }}" class="btn">Add Employee</a>
-            <a href="{{ url_for('leave.list_requests') }}" class="btn">Review Leaves</a>
-            <a href="{{ url_for('payroll.calculate') }}" class="btn">Process Payroll</a>
-            <a href="{{ url_for('attendance.report') }}" class="btn">Attendance Report</a>
+
+    <div class="stats-grid">
+        <div class="stat-card employees">
+            <div class="stat-icon">
+                <i data-feather="users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Employees</h3>
+                <p>{{ stats.total_employees }}</p>
+            </div>
+        </div>
+        <div class="stat-card attendance">
+            <div class="stat-icon">
+                <i data-feather="check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Today's Attendance</h3>
+                <p>{{ stats.today_attendance }}/{{ stats.total_employees }}</p>
+                <span class="percent">
+                    {{ (stats.today_attendance / stats.total_employees * 100)|round }}%
+                </span>
+            </div>
+        </div>
+        <div class="stat-card leaves">
+            <div class="stat-icon">
+                <i data-feather="calendar"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Pending Leaves</h3>
+                <p>{{ stats.pending_leaves }}</p>
+            </div>
+        </div>
+        <div class="stat-card payroll">
+            <div class="stat-icon">
+                <i data-feather="dollar-sign"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Monthly Payroll</h3>
+                <p>${{ "{:,.2f}".format(stats.monthly_payroll) }}</p>
+            </div>
         </div>
     </div>
-    
-    <div class="recent-activities">
-        <h2>Recent Activities</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Activity</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
+
+    <div class="dashboard-grid">
+        <div class="grid-item quick-actions">
+            <div class="card-header">
+                <h2>Quick Actions</h2>
+            </div>
+            <div class="action-grid">
+                <a href="{{ url_for('employee.add') }}" class="action-card">
+                    <i data-feather="user-plus"></i>
+                    <span>Add Employee</span>
+                </a>
+                <a href="{{ url_for('leave.list_requests') }}" class="action-card">
+                    <i data-feather="clipboard"></i>
+                    <span>Review Leaves</span>
+                </a>
+                <a href="{{ url_for('payroll.calculate') }}" class="action-card">
+                    <i data-feather="credit-card"></i>
+                    <span>Process Payroll</span>
+                </a>
+                <a href="{{ url_for('attendance.report') }}" class="action-card">
+                    <i data-feather="file-text"></i>
+                    <span>Attendance Report</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="grid-item recent-activities">
+            <div class="card-header">
+                <h2>Recent Activities</h2>
+                <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="activity-list">
                 {% for activity in activities %}
-                <tr>
-                    <td>{{ activity.timestamp }}</td>
-                    <td>{{ activity.type }}</td>
-                    <td>{{ activity.details }}</td>
-                </tr>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i data-feather="{{ 
+                            'user-check' if activity.type == 'Attendance' 
+                            else 'calendar' if activity.type == 'Leave Request'
+                            else 'dollar-sign' if activity.type == 'Payroll'
+                            else 'activity'
+                        }}"></i>
+                    </div>
+                    <div class="activity-details">
+                        <p>{{ activity.details }}</p>
+                        <span class="activity-time">{{ activity.timestamp.strftime('%I:%M %p') }}</span>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-        </table>
+            </div>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .admin-dashboard {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .header-content h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-content p {
+        color: #6B7280;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-icon {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        color: white;
+    }
+
+    .employees .stat-icon { background: #4F46E5; }
+    .attendance .stat-icon { background: #059669; }
+    .leaves .stat-icon { background: #DC2626; }
+    .payroll .stat-icon { background: #2563EB; }
+
+    .stat-info h3 {
+        color: #6B7280;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-info p {
+        color: #111827;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .grid-item {
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem;
+        background: #F3F4F6;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: #374151;
+        transition: all 0.2s;
+    }
+
+    .action-card:hover {
+        background: #E5E7EB;
+        transform: translateY(-2px);
+    }
+
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background: #F9FAFB;
+    }
+
+    .activity-details {
+        flex: 1;
+    }
+
+    .activity-time {
+        font-size: 0.875rem;
+        color: #6B7280;
+    }
+
+    @media (max-width: 768px) {
+        .admin-dashboard {
+            padding: 1rem;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function refreshStats() {
+        location.reload();
+    }
+</script>
 {% endblock %}

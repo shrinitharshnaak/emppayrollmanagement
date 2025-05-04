@@ -2,68 +2,315 @@
 
 {% block content %}
 <div class="user-dashboard">
-    <h1>Welcome, {{ current_user.name }}</h1>
-    
-    <div class="user-stats">
-        <div class="stat-card">
-            <h3>Attendance This Month</h3>
-            <p>{{ stats.monthly_attendance }}/{{ stats.working_days }}</p>
+    <!-- Welcome Section -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <h1>Welcome back, <span class="user-name">{{ current_user.name }}</span></h1>
+            <p class="header-subtitle">{{ today.strftime('%A, %B %d, %Y') }}</p>
         </div>
-        <div class="stat-card">
-            <h3>Leave Balance</h3>
-            <p>{{ stats.leave_balance }} days</p>
-        </div>
-        <div class="stat-card">
-            <h3>Latest Salary</h3>
-            <p>${{ stats.latest_salary }}</p>
+        <div class="profile-section">
+            <div class="profile-badge">
+                <i data-feather="user" class="profile-icon"></i>
+                <span class="profile-status {{ 'online' if today_attendance else 'offline' }}"></span>
+            </div>
         </div>
     </div>
-    
-    <div class="salary-details">
-        <h2>Salary Components</h2>
-        <table>
-            <tr>
-                <th>Component</th>
-                <th>Amount</th>
-            </tr>
-            <tr>
-                <td>Base Salary</td>
-                <td>${{ current_user.base_salary }}</td>
-            </tr>
-            <tr>
-                <td>HRA</td>
-                <td>${{ current_user.hra }}</td>
-            </tr>
-            <tr>
-                <td>DA</td>
-                <td>${{ current_user.da }}</td>
-            </tr>
-            <tr>
-                <td>Travel Allowance</td>
-                <td>${{ current_user.ta }}</td>
-            </tr>
-            <tr>
-                <td>PF Deduction</td>
-                <td>-${{ current_user.pf }}</td>
-            </tr>
-            <tr>
-                <td>Tax Deduction</td>
-                <td>-${{ current_user.tax }}</td>
-            </tr>
-            <tr class="total">
-                <td>Net Salary</td>
-                <td>${{ current_user.net_salary }}</td>
-            </tr>
-        </table>
+
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+        <div class="stat-card attendance">
+            <div class="stat-icon">
+                <i data-feather="clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Monthly Attendance</h3>
+                <p class="stat-value">{{ stats.monthly_attendance }} / {{ stats.working_days }}</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width: {{ (stats.monthly_attendance / stats.working_days * 100)|round }}%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card leave">
+            <div class="stat-icon">
+                <i data-feather="calendar"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Leave Balance</h3>
+                <p class="stat-value">{{ stats.leave_balance }}</p>
+                <p class="stat-subtitle">Days Remaining</p>
+            </div>
+        </div>
+
+        <div class="stat-card salary">
+            <div class="stat-icon">
+                <i data-feather="dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3>Latest Salary</h3>
+                <p class="stat-value">${{ "{:,.2f}".format(stats.latest_salary) }}</p>
+                <p class="stat-subtitle">Last Month</p>
+            </div>
+        </div>
     </div>
-    
-    <div class="quick-actions">
-        <h2>Quick Actions</h2>
-        <div class="action-buttons">
-            <a href="{{ url_for('attendance.record') }}" class="btn">Mark Attendance</a>
-            <a href="{{ url_for('leave.request_leave') }}" class="btn">Request Leave</a>
-            <a href="{{ url_for('payroll.report') }}" class="btn">View Payslips</a>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-grid">
+        <div class="grid-item salary-breakdown">
+            <div class="card-header">
+                <h2>Salary Breakdown</h2>
+                <span class="card-badge">Monthly</span>
+            </div>
+            <div class="salary-components">
+                <div class="component">
+                    <span>Base Salary</span>
+                    <span class="amount">${{ "{:,.2f}".format(current_user.base_salary) }}</span>
+                </div>
+                <div class="component">
+                    <span>HRA</span>
+                    <span class="amount">${{ "{:,.2f}".format(current_user.hra) }}</span>
+                </div>
+                <div class="component">
+                    <span>DA</span>
+                    <span class="amount">${{ "{:,.2f}".format(current_user.da) }}</span>
+                </div>
+                <div class="component">
+                    <span>Travel Allowance</span>
+                    <span class="amount">${{ "{:,.2f}".format(current_user.ta) }}</span>
+                </div>
+                <div class="component deduction">
+                    <span>PF Deduction</span>
+                    <span class="amount">-${{ "{:,.2f}".format(current_user.pf) }}</span>
+                </div>
+                <div class="component deduction">
+                    <span>Tax Deduction</span>
+                    <span class="amount">-${{ "{:,.2f}".format(current_user.tax) }}</span>
+                </div>
+                <div class="component total">
+                    <span>Net Salary</span>
+                    <span class="amount">${{ "{:,.2f}".format(current_user.net_salary) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-item quick-actions">
+            <div class="card-header">
+                <h2>Quick Actions</h2>
+            </div>
+            <div class="action-grid">
+                <a href="{{ url_for('attendance.record') }}" class="action-card">
+                    <i data-feather="check-circle"></i>
+                    <span>Mark Attendance</span>
+                </a>
+                <a href="{{ url_for('leave.request_leave') }}" class="action-card">
+                    <i data-feather="calendar"></i>
+                    <span>Request Leave</span>
+                </a>
+                <a href="{{ url_for('payroll.report') }}" class="action-card">
+                    <i data-feather="file-text"></i>
+                    <span>View Payslips</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .user-dashboard {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .header-content h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-name {
+        color: #4f46e5;
+    }
+
+    .header-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .profile-badge {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        background: #f3f4f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-status {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+
+    .profile-status.online { background: #10b981; }
+    .profile-status.offline { background: #6b7280; }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .attendance .stat-icon { background: #4f46e5; }
+    .leave .stat-icon { background: #059669; }
+    .salary .stat-icon { background: #dc2626; }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0.5rem 0;
+    }
+
+    .stat-subtitle {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #e5e7eb;
+        border-radius: 3px;
+        margin-top: 0.75rem;
+    }
+
+    .progress {
+        height: 100%;
+        background: #4f46e5;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 1.5rem;
+    }
+
+    .grid-item {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-badge {
+        background: #f3f4f6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .salary-components .component {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .component.deduction .amount {
+        color: #dc2626;
+    }
+
+    .component.total {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid #f3f4f6;
+        font-weight: 600;
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.25rem;
+        background: #f9fafb;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        color: #1a1a1a;
+        transition: all 0.3s ease;
+    }
+
+    .action-card:hover {
+        transform: translateY(-2px);
+        background: #f3f4f6;
+    }
+
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .user-dashboard {
+            padding: 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}

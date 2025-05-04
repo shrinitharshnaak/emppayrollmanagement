@@ -36,6 +36,7 @@ def login() -> Union[str, Response]:
         
         if employee and employee.check_password(password):
             session['user_id'] = employee.id
+            session['user_name'] = employee.name  # Add user name to session
             session['is_admin'] = employee.role == 'admin'
             flash('Login successful!', 'success')
             # Redirect based on role

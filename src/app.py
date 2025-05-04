@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from .config import Config
 from .database import db, init_app
+from datetime import datetime
 
 def create_app():
     app = Flask(__name__)
@@ -12,6 +13,13 @@ def create_app():
     # Import and register blueprints
     from .routes import init_routes
     init_routes(app)
+    
+    # Add template context processor
+    @app.context_processor
+    def utility_processor():
+        return {
+            'now': datetime.now()
+        }
     
     @app.route('/')
     def home():

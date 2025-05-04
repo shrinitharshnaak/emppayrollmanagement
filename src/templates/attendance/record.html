@@ -1,29 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="attendance-record">
-    <h2>Mark Your Attendance</h2>
-    <div class="current-time">
-        <h3>Current Time: <span id="clock">00:00:00</span></h3>
-        <p>Date: {{ today }}</p>
+<div class="attendance-record-container">
+    <div class="header">
+        <h1>Attendance Tracker</h1>
+        <p class="subheading">Mark Your Attendance and Track Your Workday</p>
     </div>
-    <form method="POST">
-        <input type="hidden" name="employee_id" value="{{ session.get('user_id') }}">
-        <div class="attendance-status">
-            {% if today_attendance %}
-                <p class="status-text">You have already marked your attendance today.</p>
-                {% if not today_attendance.time_out %}
-                    <button type="submit" name="action" value="checkout" class="btn-primary">Mark Check Out</button>
-                {% endif %}
-            {% else %}
-                <button type="submit" name="action" value="checkin" class="btn-primary">Mark Attendance</button>
-            {% endif %}
+    
+    <div class="time-info">
+        <h3>Current Time:</h3>
+        <div class="clock">
+            <span id="clock">00:00:00</span>
         </div>
-    </form>
+        <p class="date-text">{{ today }}</p>
+    </div>
+
+    <div class="attendance-status-container">
+        <form method="POST" class="attendance-form">
+            <input type="hidden" name="employee_id" value="{{ session.get('user_id') }}">
+            <div class="status-message">
+                {% if today_attendance %}
+                    <p class="status-text positive">You have already marked your attendance today.</p>
+                    {% if not today_attendance.time_out %}
+                        <button type="submit" name="action" value="checkout" class="btn-checkout">Mark Check Out</button>
+                    {% endif %}
+                {% else %}
+                    <button type="submit" name="action" value="checkin" class="btn-checkin">Mark Attendance</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
 
     <div class="attendance-history">
         <h3>Your Recent Attendance</h3>
-        <table>
+        <table class="attendance-table">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -45,6 +55,124 @@
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .attendance-record-container {
+        background-color: #F4F7FC;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        color: #3A3A3A;
+    }
+
+    .subheading {
+        color: #6C757D;
+        font-size: 1.1rem;
+        margin-top: 5px;
+    }
+
+    .time-info {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .clock {
+        font-size: 2rem;
+        color: #007BFF;
+        font-weight: bold;
+    }
+
+    .date-text {
+        font-size: 1.1rem;
+        color: #6C757D;
+        margin-top: 10px;
+    }
+
+    .attendance-status-container {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .status-message {
+        margin: 20px 0;
+    }
+
+    .status-text {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    .status-text.positive {
+        color: #28A745;
+    }
+
+    .status-text.warning {
+        color: #FFC107;
+    }
+
+    .btn-checkin, .btn-checkout {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border: none;
+        background-color: #007BFF;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-checkin:hover, .btn-checkout:hover {
+        background-color: #0056b3;
+    }
+
+    .attendance-history {
+        margin-top: 30px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .attendance-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .attendance-table th, .attendance-table td {
+        padding: 12px;
+        text-align: left;
+        font-size: 1rem;
+    }
+
+    .attendance-table th {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .attendance-table tr:nth-child(even) {
+        background-color: #F7F7F7;
+    }
+
+    .attendance-table tr:hover {
+        background-color: #E0E0E0;
+    }
+
+</style>
 {% endblock %}
 
 {% block scripts %}

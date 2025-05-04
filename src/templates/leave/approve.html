@@ -1,40 +1,300 @@
+{% extends "base.html" %}
 
-       {% extends "base.html" %}
+{% block content %}
+<div class="leave-management">
+    <div class="page-header">
+        <h1>Leave Management</h1>
+        <div class="header-actions">
+            <button class="btn-filter" onclick="toggleFilters()">
+                <i data-feather="filter"></i>
+                Filter
+            </button>
+        </div>
+    </div>
 
-    {% block content %}
-     <div class="leave-approval">
-      <h2>Leave Requests</h2>
-     <table>
-               <thead>
-                  <tr>
-                       <th>Employee</th>
-                       <th>Start Date</th>
-                       <th>End Date</th>
-                       <th>Reason</th>
-                       <th>Status</th>
-                       <th>Actions</th>
-                   </tr>
-               </thead>
-              <tbody>
-                 {% for leave in leaves %}
-                   <tr>
-                       <td>{{ leave.employee.name }}</td>
-                      <td>{{ leave.start_date }}</td>
-                     <td>{{ leave.end_date }}</td>
-                      <td>{{ leave.reason }}</td>
-                     <td>{{ leave.status }}</td>
-                      <td>
-                       <form method="POST" action="{{ url_for('leave.approve', id=leave.id) }}" class="inline-form">
-                               <select name="status">
-                                   <option value="approved">Approve</option>
-                                 <option value="rejected">Reject</option>
-                            </select>
-                             <button type="submit">Update</button>
-                        </form>
-                     </td>
-                  </tr>
-                  {% endfor %}
-             </tbody>
-           </table>
-       </div>
-       {% endblock %}
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-group">
+            <label>Status</label>
+            <select onchange="filterLeaves()">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Date Range</label>
+            <div class="date-inputs">
+                <input type="date" placeholder="Start Date">
+                <input type="date" placeholder="End Date">
+            </div>
+        </div>
+    </div>
+
+    <div class="leave-grid">
+        {% for leave in leaves %}
+        <div class="leave-card">
+            <div class="leave-header">
+                <div class="employee-info">
+                    <div class="avatar">{{ leave.employee.name[:2].upper() }}</div>
+                    <div class="details">
+                        <h3>{{ leave.employee.name }}</h3>
+                        <span class="position">{{ leave.employee.position }}</span>
+                    </div>
+                </div>
+                <span class="status-badge {{ leave.status }}">
+                    {{ leave.status.title() }}
+                </span>
+            </div>
+
+            <div class="leave-details">
+                <div class="detail-item">
+                    <i data-feather="calendar"></i>
+                    <div class="detail-content">
+                        <label>Duration</label>
+                        <p>{{ leave.start_date.strftime('%b %d') }} - {{ leave.end_date.strftime('%b %d, %Y') }}</p>
+                        <span class="days">{{ (leave.end_date - leave.start_date).days + 1 }} days</span>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <i data-feather="file-text"></i>
+                    <div class="detail-content">
+                        <label>Reason</label>
+                        <p>{{ leave.reason }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if leave.status == 'pending' %}
+            <div class="leave-actions">
+                <form method="POST" action="{{ url_for('leave.approve', id=leave.id) }}" class="action-form">
+                    <button type="submit" name="status" value="approved" class="btn-approve">
+                        <i data-feather="check"></i> Approve
+                    </button>
+                    <button type="submit" name="status" value="rejected" class="btn-reject">
+                        <i data-feather="x"></i> Reject
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .leave-management {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        color: #1a1a1a;
+    }
+
+    .filter-panel {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        display: none;
+    }
+
+    .filter-panel.active {
+        display: grid;
+    }
+
+    .filter-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #4b5563;
+        font-weight: 500;
+    }
+
+    .date-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .leave-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .leave-card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .leave-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .employee-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background: #4f46e5;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+
+    .details h3 {
+        color: #1f2937;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .position {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .status-badge {
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-badge.approved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-badge.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .leave-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .detail-item {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .detail-item i {
+        color: #6b7280;
+    }
+
+    .detail-content label {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .detail-content p {
+        color: #1f2937;
+        margin: 0.25rem 0;
+    }
+
+    .days {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .leave-actions {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .action-form {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-approve, .btn-reject {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-approve {
+        background: #4f46e5;
+        color: white;
+        border: none;
+    }
+
+    .btn-reject {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .btn-approve:hover {
+        background: #4338ca;
+    }
+
+    .btn-reject:hover {
+        background: #fecaca;
+    }
+
+    @media (max-width: 640px) {
+        .action-form {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleFilters() {
+        const filterPanel = document.getElementById('filterPanel');
+        filterPanel.classList.toggle('active');
+    }
+
+    function filterLeaves() {
+        // Implement filter functionality
+    }
+</script>
+{% endblock %}

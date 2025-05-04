@@ -26,25 +26,28 @@ def dashboard():
         ).all())
     }
     
-    # Get recent activities
+    # Get recent activities with consistent datetime objects
     activities = []
-    recent_leaves = Leave.query.order_by(Leave.id.desc()).limit(5).all()
-    recent_attendance = Attendance.query.order_by(Attendance.id.desc()).limit(5).all()
     
+    # Add leave requests
+    recent_leaves = Leave.query.order_by(Leave.id.desc()).limit(5).all()
     for leave in recent_leaves:
         activities.append({
-            'timestamp': leave.start_date,
+            'timestamp': datetime.combine(leave.start_date, datetime.min.time()),
             'type': 'Leave Request',
             'details': f'{leave.employee.name} - {leave.status}'
         })
     
+    # Add attendance records
+    recent_attendance = Attendance.query.order_by(Attendance.id.desc()).limit(5).all()
     for attendance in recent_attendance:
         activities.append({
-            'timestamp': attendance.time_in,
+            'timestamp': datetime.combine(attendance.date, attendance.time_in.time() if attendance.time_in else datetime.min.time()),
             'type': 'Attendance',
             'details': f'{attendance.employee.name} - {attendance.status}'
         })
     
+    # Sort activities by timestamp
     activities.sort(key=lambda x: x['timestamp'], reverse=True)
     
     return render_template('dashboard/admin.html', 

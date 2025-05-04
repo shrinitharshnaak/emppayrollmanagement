@@ -1,40 +1,137 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="auth-form">
+<div class="auth-container">
     <div class="auth-card">
-        <h2>Sign Up</h2>
-        <form method="POST">
+        <h2 class="auth-title">Sign Up</h2>
+        <form method="POST" class="auth-form">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" required autocomplete="username">
             </div>
+
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" required autocomplete="email">
             </div>
+
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" required autocomplete="name">
             </div>
+
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" required autocomplete="new-password">
             </div>
+
             {% if session.get('is_admin') %}
             <div class="form-group">
                 <label for="role">Role</label>
-                <select name="role" id="role">
+                <select name="role" id="role" required>
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                 </select>
             </div>
             {% endif %}
-            <button type="submit" class="btn-primary">Sign Up</button>
+
+            <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
-        <div class="auth-links">
-            <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
-        </div>
+
+        <p class="auth-links">
+            Already have an account?
+            <a href="{{ url_for('auth.login') }}">Login</a>
+        </p>
     </div>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .auth-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 100px);
+        padding: 2rem;
+    }
+
+    .auth-card {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .auth-title {
+        text-align: center;
+        color: var(--black, #333);
+        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
+        font-weight: bold;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--secondary, #666);
+        font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--gray-200, #ddd);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: var(--primary, #4f46e5);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        outline: none;
+    }
+
+    .btn.btn-primary {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: var(--primary, #4f46e5);
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn.btn-primary:hover {
+        background-color: var(--primary-dark, #3730a3);
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: var(--secondary, #666);
+    }
+
+    .auth-links a {
+        color: var(--primary, #4f46e5);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+</style>
 {% endblock %}

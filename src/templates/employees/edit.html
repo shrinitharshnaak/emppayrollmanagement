@@ -1,86 +1,119 @@
-payroll-management
-├── src
-│   ├── static
-│   │   ├── site.css
-│   │   └── scripts.js
-│   ├── templates
-│   │   ├── base.html
-│   │   ├── home.html
-│   │   ├── login.html
-│   │   ├── employees
-│   │   │   ├── list.html
-│   │   │   ├── add.html
-│   │   │   └── edit.html
-│   │   │       {% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<div class="employee-form">
-    <h2>Edit Employee</h2>
-    <form method="POST">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" value="{{ employee.username }}" required>
+<div class="form-wrapper">
+    <h2 class="form-title">Edit Employee</h2>
+    <form method="POST" class="employee-form">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ employee.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" value="{{ employee.name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ employee.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="position">Position</label>
+                <input type="text" id="position" name="position" value="{{ employee.position }}" required>
+            </div>
+            <div class="form-group">
+                <label for="salary">Basic Salary</label>
+                <input type="number" id="salary" name="salary" step="0.01" value="{{ employee.salary }}" required>
+            </div>
+            <div class="form-group">
+                <label for="joining_date">Joining Date</label>
+                <input type="date" id="joining_date" name="joining_date" value="{{ employee.joining_date }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">New Password (leave blank to keep current)</label>
+                <input type="password" id="password" name="password">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" value="{{ employee.name }}" required>
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Update Employee</button>
         </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" value="{{ employee.email }}" required>
-        </div>
-        <div class="form-group">
-            <label for="position">Position</label>
-            <input type="text" id="position" name="position" value="{{ employee.position }}" required>
-        </div>
-        <div class="form-group">
-            <label for="salary">Basic Salary</label>
-            <input type="number" id="salary" name="salary" step="0.01" value="{{ employee.salary }}" required>
-        </div>
-        <div class="form-group">
-            <label for="joining_date">Joining Date</label>
-            <input type="date" id="joining_date" name="joining_date" value="{{ employee.joining_date }}" required>
-        </div>
-        <div class="form-group">
-            <label for="password">New Password (leave blank to keep current)</label>
-            <input type="password" id="password" name="password">
-        </div>
-        <button type="submit">Update Employee</button>
     </form>
 </div>
 {% endblock %}
-│   │   ├── attendance
-│   │   │   ├── record.html
-│   │   │   └── report.html
-│   │   ├── leave
-│   │   │   ├── request.html
-│   │   │   └── approve.html
-│   │   └── payroll
-│   │       ├── calculate.html
-│   │       └── report.html
-│   ├── models
-│   │   ├── __init__.py
-│   │   ├── employee.py
-│   │   ├── attendance.py
-│   │   ├── leave.py
-│   │   └── payroll.py
-│   ├── routes
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── employee.py
-│   │   ├── attendance.py
-│   │   ├── leave.py
-│   │   └── payroll.py
-│   ├── database.py
-│   ├── schema.sql
-│   └── app.py
-├── tests
-│   ├── __init__.py
-│   ├── test_auth.py
-│   ├── test_employee.py
-│   ├── test_attendance.py
-│   ├── test_leave.py
-│   └── test_payroll.py
-├── requirements.txt
-├── config.py
-└── README.md
+
+{% block styles %}
+<style>
+    .form-wrapper {
+        max-width: 850px;
+        margin: 40px auto;
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2rem;
+        color: #2c3e50;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-group input {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #007BFF;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    }
+
+    .form-actions {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .submit-btn {
+        background-color: #007BFF;
+        color: white;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+        .form-wrapper {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}

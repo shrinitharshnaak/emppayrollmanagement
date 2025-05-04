@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="profile-avatar">
+                <i data-feather="user" class="avatar-icon"></i>
+            </div>
+            <div class="profile-details">
+                <h1>{{ user.name }}</h1>
+                <p class="role-badge">{{ user.position }}</p>
+            </div>
+        </div>
+        <a href="{{ url_for('user.settings') }}" class="btn-edit">
+            <i data-feather="settings"></i>
+            Edit Profile
+        </a>
+    </div>
+
+    <div class="profile-grid">
+        <div class="profile-card">
+            <h2>Personal Information</h2>
+            <div class="info-group">
+                <label>Username</label>
+                <p>{{ user.username }}</p>
+            </div>
+            <div class="info-group">
+                <label>Email</label>
+                <p>{{ user.email }}</p>
+            </div>
+            <div class="info-group">
+                <label>Joining Date</label>
+                <p>{{ user.joining_date.strftime('%B %d, %Y') }}</p>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <h2>Employment Details</h2>
+            <div class="info-group">
+                <label>Employee ID</label>
+                <p>#{{ user.id }}</p>
+            </div>
+            <div class="info-group">
+                <label>Department</label>
+                <p>{{ user.position }}</p>
+            </div>
+            <div class="info-group">
+                <label>Role</label>
+                <p>{{ user.role.title() }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .profile-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        background: #f3f4f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar-icon {
+        width: 40px;
+        height: 40px;
+        color: #6b7280;
+    }
+
+    .profile-details h1 {
+        font-size: 1.875rem;
+        color: #111827;
+        margin-bottom: 0.5rem;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: #e0e7ff;
+        color: #4f46e5;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #4f46e5;
+        color: white;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    .btn-edit:hover {
+        background: #4338ca;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .profile-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .profile-card h2 {
+        font-size: 1.25rem;
+        color: #111827;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .info-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .info-group label {
+        display: block;
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-group p {
+        color: #111827;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 640px) {
+        .profile-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,65 +1,160 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="employee-form">
-    <h2>Add New Employee</h2>
-    <form method="POST">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required>
+<div class="form-wrapper">
+    <h2 class="form-title">Add New Employee</h2>
+    <form method="POST" class="employee-form">
+        <div class="form-section">
+            <h3>Basic Information</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="position">Position</label>
+                    <input type="text" id="position" name="position" required>
+                </div>
+                <div class="form-group">
+                    <label for="joining_date">Joining Date</label>
+                    <input type="date" id="joining_date" name="joining_date" required>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="position">Position</label>
-            <input type="text" id="position" name="position" required>
-        </div>
-        <div class="form-group">
-            <label for="salary">Basic Salary</label>
-            <input type="number" id="salary" name="salary" step="0.01" required>
-        </div>
-        <div class="form-group">
-            <label for="joining_date">Joining Date</label>
-            <input type="date" id="joining_date" name="joining_date" required>
-        </div>
-        <div class="salary-section">
+
+        <div class="form-section">
             <h3>Salary Details</h3>
-            <div class="form-group">
-                <label for="base_salary">Base Salary</label>
-                <input type="number" id="base_salary" name="base_salary" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label for="hra">HRA</label>
-                <input type="number" id="hra" name="hra" step="0.01" value="0">
-            </div>
-            <div class="form-group">
-                <label for="da">DA</label>
-                <input type="number" id="da" name="da" step="0.01" value="0">
-            </div>
-            <div class="form-group">
-                <label for="ta">Travel Allowance</label>
-                <input type="number" id="ta" name="ta" step="0.01" value="0">
-            </div>
-            <div class="form-group">
-                <label for="pf">PF Deduction</label>
-                <input type="number" id="pf" name="pf" step="0.01" value="0">
-            </div>
-            <div class="form-group">
-                <label for="tax">Tax Deduction</label>
-                <input type="number" id="tax" name="tax" step="0.01" value="0">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="base_salary">Base Salary</label>
+                    <input type="number" id="base_salary" name="base_salary" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="hra">HRA</label>
+                    <input type="number" id="hra" name="hra" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="da">DA</label>
+                    <input type="number" id="da" name="da" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="ta">Travel Allowance</label>
+                    <input type="number" id="ta" name="ta" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="pf">PF Deduction</label>
+                    <input type="number" id="pf" name="pf" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tax">Tax Deduction</label>
+                    <input type="number" id="tax" name="tax" step="0.01" value="0">
+                </div>
             </div>
         </div>
-        <button type="submit">Add Employee</button>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">Add Employee</button>
+        </div>
     </form>
 </div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .form-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2rem;
+        color: #2c3e50;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+    }
+
+    .form-section h3 {
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 1.25rem;
+        border-bottom: 2px solid #007BFF;
+        padding-bottom: 5px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-group input {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #007BFF;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    }
+
+    .form-actions {
+        text-align: center;
+    }
+
+    .submit-btn {
+        background-color: #007BFF;
+        color: white;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+        .form-wrapper {
+            padding: 20px;
+        }
+    }
+</style>
 {% endblock %}

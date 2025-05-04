@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from ..models.leave import Leave
 from ..database import db
-from datetime import datetime
+from datetime import datetime, date
 from ..routes.auth import login_required, admin_required
 
 leave_bp = Blueprint('leave', __name__, url_prefix='/leave')
@@ -9,6 +9,7 @@ leave_bp = Blueprint('leave', __name__, url_prefix='/leave')
 @leave_bp.route('/request', methods=['GET', 'POST'])
 @login_required
 def request_leave():
+    today = date.today().strftime('%Y-%m-%d')
     if request.method == 'POST':
         employee_id = session.get('user_id')  # Get employee_id from session
         leave = Leave(
@@ -21,7 +22,7 @@ def request_leave():
         db.session.commit()
         flash('Leave request submitted successfully', 'success')
         return redirect(url_for('leave.request_leave'))
-    return render_template('leave/request.html')
+    return render_template('leave/request.html', today=today)
 
 @leave_bp.route('/list')
 @admin_required

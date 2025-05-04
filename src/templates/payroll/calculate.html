@@ -1,34 +1,211 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="payroll-calculate">
-    <h2>Calculate Payroll</h2>
-    <form method="POST">
-        <div class="form-group">
-            <label for="employee_id">Employee</label>
-            <select name="employee_id" id="employee_id" required>
-                {% for employee in employees %}
-                <option value="{{ employee.id }}">{{ employee.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="month">Month</label>
-            <input type="number" id="month" name="month" min="1" max="12" required>
-        </div>
-        <div class="form-group">
-            <label for="year">Year</label>
-            <input type="number" id="year" name="year" required>
-        </div>
-        <div class="form-group">
-            <label for="deductions">Deductions</label>
-            <input type="number" id="deductions" name="deductions" step="0.01" value="0">
-        </div>
-        <div class="form-group">
-            <label for="additions">Additions</label>
-            <input type="number" id="additions" name="additions" step="0.01" value="0">
-        </div>
-        <button type="submit">Calculate Payroll</button>
-    </form>
+<div class="payroll-container">
+    <div class="payroll-header">
+        <h1>Process Payroll</h1>
+        <p class="subtitle">Calculate employee salaries and process monthly payroll</p>
+    </div>
+
+    <div class="payroll-card">
+        <form method="POST" class="payroll-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="employee_id">Select Employee</label>
+                    <div class="select-wrapper">
+                        <select name="employee_id" id="employee_id" required>
+                            <option value="">Choose an employee</option>
+                            {% for employee in employees %}
+                            <option value="{{ employee.id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <i data-feather="chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="date-group">
+                    <div class="form-group">
+                        <label for="month">Month</label>
+                        <div class="select-wrapper">
+                            <select name="month" id="month" required>
+                                <option value="">Select month</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                            <i data-feather="calendar"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" id="year" name="year" required min="2000" max="2099" value="{{ current_year }}">
+                    </div>
+                </div>
+
+                <div class="amount-group">
+                    <div class="form-group">
+                        <label for="deductions">Deductions</label>
+                        <div class="input-icon">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="deductions" name="deductions" step="0.01" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additions">Additions</label>
+                        <div class="input-icon">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="additions" name="additions" step="0.01" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-calculate">
+                    <i data-feather="check-circle"></i>
+                    Process Payroll
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<style>
+    .payroll-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .payroll-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .payroll-header h1 {
+        font-size: 2rem;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .payroll-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 500;
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-wrapper select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        appearance: none;
+        background: white;
+    }
+
+    .select-wrapper i {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+    }
+
+    .date-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .amount-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .input-icon {
+        position: relative;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+    }
+
+    .input-icon input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+    }
+
+    .form-actions {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .btn-calculate {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #4f46e5;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-calculate:hover {
+        background: #4338ca;
+    }
+
+    @media (max-width: 640px) {
+        .date-group, .amount-group {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}
