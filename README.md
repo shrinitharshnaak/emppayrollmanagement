@@ -140,5 +140,5 @@ Feather Icons
 Open-source contributors
 
 ## Contributors
-Shrinitharshnaa Kuppusamy
-Sahana Rajaram
+Shrinitharshnaa Kuppusamy.
+Sahana Rajaram.
