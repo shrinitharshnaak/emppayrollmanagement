@@ -89,7 +89,7 @@ The application will be available at `http://localhost:5000`.
 - **UI Framework**: Custom CSS
 
 ## 📁 Project Structure
-   ```bash
+
 payroll-management/
 ├── src/
 │   ├── static/
@@ -109,31 +109,36 @@ payroll-management/
 ├── tests/
 ├── requirements.txt
 └── README.md
-   ```
 
-🔒 Security Features
+
+## 🔒 Security Features
 Password hashing using bcrypt
 CSRF protection
 Session management
 Role-based access control
 Input validation and sanitization
-📱 Responsive Design
+
+## 📱 Responsive Design
 The application is fully responsive and works seamlessly on:
 
-💻 Desktop computers
-💪 Tablets
-📱 Mobile devices
-🤝 Contributing
-Fork the repository.
+## 💻 Desktop computers
+## 💪 Tablets
+## 📱 Mobile devices
+## 🤝 Contributing
+## Fork the repository.
 Create a feature branch (git checkout -b feature/AmazingFeature).
 Commit your changes (git commit -m 'Add AmazingFeature').
 Push to the branch (git push origin feature/AmazingFeature).
 Open a Pull Request.
-📝 License
+##📝 License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-🙏 Acknowledgments
+## 🙏 Acknowledgments
 Flask framework documentation
 SQLAlchemy documentation
 Feather Icons
 Open-source contributors
+
+## Contributors
+Shrinitharshnaa Kuppusamy
+Sahana Rajaram
