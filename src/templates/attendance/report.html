@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="attendance-report">
+    <h2>Attendance Report</h2>
+    
+    <div class="report-filters">
+        <form method="GET" class="inline-form">
+            <div class="form-group">
+                <label for="month">Month:</label>
+                <select name="month" id="month">
+                    {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>
+                        {{ m }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" value="{{ current_year }}" min="2000" max="2099">
+            </div>
+            <button type="submit" class="btn">Filter</button>
+        </form>
+    </div>
+
+    <div class="report-summary">
+        <div class="summary-card">
+            <h3>Total Present</h3>
+            <p>{{ attendances|selectattr("status", "equalto", "present")|list|length }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>Total Absent</h3>
+            <p>{{ attendances|selectattr("status", "equalto", "absent")|list|length }}</p>
+        </div>
+        <div class="summary-card">
+            <h3>Half Day</h3>
+            <p>{{ attendances|selectattr("status", "equalto", "half-day")|list|length }}</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Date</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attendance in attendances %}
+            <tr>
+                <td>{{ attendance.employee.name }}</td>
+                <td>{{ attendance.date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ attendance.time_in.strftime('%H:%M:%S') }}</td>
+                <td>{{ attendance.time_out.strftime('%H:%M:%S') if attendance.time_out else 'Not checked out' }}</td>
+                <td>
+                    <span class="status-badge status-{{ attendance.status }}">
+                        {{ attendance.status }}
+                    </span>
+                </td>
+                <td>
+                    {% if attendance.time_out %}
+                        {% set duration = attendance.time_out - attendance.time_in %}
+                        {{ duration.total_seconds()|int // 3600 }}h
+                        {{ (duration.total_seconds()|int % 3600) // 60 }}m
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

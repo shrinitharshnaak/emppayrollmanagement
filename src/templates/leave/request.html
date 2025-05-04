@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="leave-request">
+    <h2>Request Leave</h2>
+    <form method="POST">
+        <input type="hidden" name="employee_id" value="{{ session.get('user_id') }}">
+        <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" id="start_date" name="start_date" required>
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="date" id="end_date" name="end_date" required>
+        </div>
+        <div class="form-group">
+            <label for="reason">Reason</label>
+            <textarea id="reason" name="reason" required></textarea>
+        </div>
+        <button type="submit">Submit Request</button>
+    </form>
+</div>
+{% endblock %}

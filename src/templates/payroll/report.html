@@ -1,0 +1,34 @@
+
+           {% extends "base.html" %}
+
+{% block content %}
+<div class="payroll-report">
+    <h2>Payroll Report</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Month/Year</th>
+                <th>Basic Salary</th>
+                <th>Deductions</th>
+                <th>Additions</th>
+                <th>Net Salary</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payroll in payrolls %}
+            <tr>
+                <td>{{ payroll.employee.name }}</td>
+                <td>{{ payroll.month }}/{{ payroll.year }}</td>
+                <td>{{ "%.2f"|format(payroll.basic_salary) }}</td>
+                <td>{{ "%.2f"|format(payroll.deductions) }}</td>
+                <td>{{ "%.2f"|format(payroll.additions) }}</td>
+                <td>{{ "%.2f"|format(payroll.net_salary) }}</td>
+                <td>{{ payroll.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

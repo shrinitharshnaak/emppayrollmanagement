@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="user-dashboard">
+    <h1>Welcome, {{ current_user.name }}</h1>
+    
+    <div class="user-stats">
+        <div class="stat-card">
+            <h3>Attendance This Month</h3>
+            <p>{{ stats.monthly_attendance }}/{{ stats.working_days }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Leave Balance</h3>
+            <p>{{ stats.leave_balance }} days</p>
+        </div>
+        <div class="stat-card">
+            <h3>Latest Salary</h3>
+            <p>${{ stats.latest_salary }}</p>
+        </div>
+    </div>
+    
+    <div class="salary-details">
+        <h2>Salary Components</h2>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>Base Salary</td>
+                <td>${{ current_user.base_salary }}</td>
+            </tr>
+            <tr>
+                <td>HRA</td>
+                <td>${{ current_user.hra }}</td>
+            </tr>
+            <tr>
+                <td>DA</td>
+                <td>${{ current_user.da }}</td>
+            </tr>
+            <tr>
+                <td>Travel Allowance</td>
+                <td>${{ current_user.ta }}</td>
+            </tr>
+            <tr>
+                <td>PF Deduction</td>
+                <td>-${{ current_user.pf }}</td>
+            </tr>
+            <tr>
+                <td>Tax Deduction</td>
+                <td>-${{ current_user.tax }}</td>
+            </tr>
+            <tr class="total">
+                <td>Net Salary</td>
+                <td>${{ current_user.net_salary }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('attendance.record') }}" class="btn">Mark Attendance</a>
+            <a href="{{ url_for('leave.request_leave') }}" class="btn">Request Leave</a>
+            <a href="{{ url_for('payroll.report') }}" class="btn">View Payslips</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

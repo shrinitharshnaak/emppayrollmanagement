@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="payroll-calculate">
+    <h2>Calculate Payroll</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="employee_id">Employee</label>
+            <select name="employee_id" id="employee_id" required>
+                {% for employee in employees %}
+                <option value="{{ employee.id }}">{{ employee.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="month">Month</label>
+            <input type="number" id="month" name="month" min="1" max="12" required>
+        </div>
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" id="year" name="year" required>
+        </div>
+        <div class="form-group">
+            <label for="deductions">Deductions</label>
+            <input type="number" id="deductions" name="deductions" step="0.01" value="0">
+        </div>
+        <div class="form-group">
+            <label for="additions">Additions</label>
+            <input type="number" id="additions" name="additions" step="0.01" value="0">
+        </div>
+        <button type="submit">Calculate Payroll</button>
+    </form>
+</div>
+{% endblock %}

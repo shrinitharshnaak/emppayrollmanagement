@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="attendance-record">
+    <h2>Mark Your Attendance</h2>
+    <div class="current-time">
+        <h3>Current Time: <span id="clock">00:00:00</span></h3>
+        <p>Date: {{ today }}</p>
+    </div>
+    <form method="POST">
+        <input type="hidden" name="employee_id" value="{{ session.get('user_id') }}">
+        <div class="attendance-status">
+            {% if today_attendance %}
+                <p class="status-text">You have already marked your attendance today.</p>
+                {% if not today_attendance.time_out %}
+                    <button type="submit" name="action" value="checkout" class="btn-primary">Mark Check Out</button>
+                {% endif %}
+            {% else %}
+                <button type="submit" name="action" value="checkin" class="btn-primary">Mark Attendance</button>
+            {% endif %}
+        </div>
+    </form>
+
+    <div class="attendance-history">
+        <h3>Your Recent Attendance</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_history %}
+                <tr>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.time_in.strftime('%H:%M:%S') }}</td>
+                    <td>{{ record.time_out.strftime('%H:%M:%S') if record.time_out else 'Not checked out' }}</td>
+                    <td>{{ record.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateClock() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('clock').textContent = timeString;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+{% endblock %}
