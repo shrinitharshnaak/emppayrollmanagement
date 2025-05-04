@@ -89,7 +89,7 @@ The application will be available at `http://localhost:5000`.
 - **UI Framework**: Custom CSS
 
 ## 📁 Project Structure
-
+   ```bash
 payroll-management/
 ├── src/
 │   ├── static/
@@ -109,7 +109,7 @@ payroll-management/
 ├── tests/
 ├── requirements.txt
 └── README.md
-
+```
 
 ## 🔒 Security Features
 Password hashing using bcrypt
@@ -125,7 +125,7 @@ The application is fully responsive and works seamlessly on:
 ## 💪 Tablets
 ## 📱 Mobile devices
 ## 🤝 Contributing
-## Fork the repository.
+Fork the repository.
 Create a feature branch (git checkout -b feature/AmazingFeature).
 Commit your changes (git commit -m 'Add AmazingFeature').
 Push to the branch (git push origin feature/AmazingFeature).
