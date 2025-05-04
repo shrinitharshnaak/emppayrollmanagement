@@ -1,137 +1,325 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <h2 class="auth-title">Sign Up</h2>
-        <form method="POST" class="auth-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required autocomplete="username">
+<div class="register-container">
+    <div class="register-card">
+        <div class="card-header">
+            <i data-feather="user-plus" class="header-icon"></i>
+            <h2>Create Account</h2>
+            <p>Join our payroll management system</p>
+        </div>
+
+        <form method="POST" class="register-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="username">
+                        <i data-feather="at-sign"></i>
+                        Username
+                    </label>
+                    <input type="text" id="username" name="username" required 
+                           autocomplete="username" placeholder="Choose a username">
+                    <span class="input-hint">Must be unique</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <i data-feather="mail"></i>
+                        Email
+                    </label>
+                    <input type="email" id="email" name="email" required 
+                           autocomplete="email" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="name">
+                        <i data-feather="user"></i>
+                        Full Name
+                    </label>
+                    <input type="text" id="name" name="name" required 
+                           autocomplete="name" placeholder="Your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i data-feather="lock"></i>
+                        Password
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" 
+                               required autocomplete="new-password"
+                               placeholder="Create a strong password">
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i data-feather="eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">Password strength</span>
+                    </div>
+                </div>
+
+                {% if session.get('is_admin') %}
+                <div class="form-group">
+                    <label for="role">
+                        <i data-feather="shield"></i>
+                        Role
+                    </label>
+                    <select name="role" id="role" required>
+                        <option value="user">Employee</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                {% endif %}
             </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required autocomplete="email">
+            <div class="form-actions">
+                <button type="submit" class="btn-register">
+                    <i data-feather="user-check"></i>
+                    Create Account
+                </button>
             </div>
-
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required autocomplete="name">
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required autocomplete="new-password">
-            </div>
-
-            {% if session.get('is_admin') %}
-            <div class="form-group">
-                <label for="role">Role</label>
-                <select name="role" id="role" required>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            {% endif %}
-
-            <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
 
-        <p class="auth-links">
-            Already have an account?
-            <a href="{{ url_for('auth.login') }}">Login</a>
-        </p>
+        <div class="auth-links">
+            <p>Already have an account? <a href="{{ url_for('auth.login') }}">Sign In</a></p>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block styles %}
 <style>
-    .auth-container {
+    .register-container {
+        min-height: calc(100vh - 100px);
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: calc(100vh - 100px);
         padding: 2rem;
+        background: linear-gradient(135deg, #f6f7ff 0%, #f0f3ff 100%);
     }
 
-    .auth-card {
-        background: #fff;
-        padding: 2rem;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    .register-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        padding: 2.5rem;
         width: 100%;
-        max-width: 450px;
+        max-width: 600px;
     }
 
-    .auth-title {
+    .card-header {
         text-align: center;
-        color: var(--black, #333);
-        margin-bottom: 1.5rem;
-        font-size: 1.75rem;
-        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        color: #4f46e5;
+        margin-bottom: 1rem;
+    }
+
+    .card-header h2 {
+        font-size: 1.875rem;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-header p {
+        color: #6b7280;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 1.5rem;
     }
 
     .form-group {
-        margin-bottom: 1.25rem;
+        position: relative;
     }
 
     .form-group label {
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         margin-bottom: 0.5rem;
-        color: var(--secondary, #666);
-        font-weight: 600;
+        color: #374151;
+        font-weight: 500;
+    }
+
+    .form-group label i {
+        width: 18px;
+        height: 18px;
+        color: #6b7280;
     }
 
     .form-group input,
     .form-group select {
         width: 100%;
         padding: 0.75rem;
-        border: 1px solid var(--gray-200, #ddd);
+        border: 2px solid #e5e7eb;
         border-radius: 0.5rem;
         font-size: 1rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition: all 0.2s;
     }
 
     .form-group input:focus,
     .form-group select:focus {
-        border-color: var(--primary, #4f46e5);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         outline: none;
     }
 
-    .btn.btn-primary {
+    .input-hint {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+
+    .password-input {
+        position: relative;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+
+    .strength-bar {
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-bar::before {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 0;
+        background: #4f46e5;
+        transition: width 0.3s;
+    }
+
+    .strength-text {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+
+    .form-actions {
+        margin-top: 2rem;
+    }
+
+    .btn-register {
         width: 100%;
-        padding: 0.75rem;
-        background-color: var(--primary, #4f46e5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.875rem;
+        background: #4f46e5;
         color: white;
         border: none;
         border-radius: 0.5rem;
         font-size: 1rem;
-        font-weight: 600;
+        font-weight: 500;
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s;
     }
 
-    .btn.btn-primary:hover {
-        background-color: var(--primary-dark, #3730a3);
+    .btn-register:hover {
+        background: #4338ca;
+        transform: translateY(-1px);
     }
 
     .auth-links {
         text-align: center;
         margin-top: 1.5rem;
-        color: var(--secondary, #666);
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        color: #6b7280;
     }
 
     .auth-links a {
-        color: var(--primary, #4f46e5);
+        color: #4f46e5;
+        font-weight: 500;
         text-decoration: none;
-        font-weight: 600;
     }
 
     .auth-links a:hover {
         text-decoration: underline;
     }
+
+    @media (max-width: 640px) {
+        .register-container {
+            padding: 1rem;
+        }
+
+        .register-card {
+            padding: 1.5rem;
+        }
+    }
 </style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function togglePassword() {
+        const input = document.getElementById('password');
+        const icon = document.querySelector('.toggle-password i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.setAttribute('data-feather', 'eye-off');
+        } else {
+            input.type = 'password';
+            icon.setAttribute('data-feather', 'eye');
+        }
+        feather.replace();
+    }
+
+    document.getElementById('password').addEventListener('input', function(e) {
+        const password = e.target.value;
+        const strength = calculatePasswordStrength(password);
+        updatePasswordStrength(strength);
+    });
+
+    function calculatePasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength += 25;
+        if (password.match(/[a-z]/)) strength += 25;
+        if (password.match(/[A-Z]/)) strength += 25;
+        if (password.match(/[0-9]/)) strength += 25;
+        return strength;
+    }
+
+    function updatePasswordStrength(strength) {
+        const bar = document.querySelector('.strength-bar');
+        const text = document.querySelector('.strength-text');
+        bar.style.width = strength + '%';
+        
+        if (strength < 50) {
+            bar.style.background = '#ef4444';
+            text.textContent = 'Weak password';
+        } else if (strength < 75) {
+            bar.style.background = '#f59e0b';
+            text.textContent = 'Moderate password';
+        } else {
+            bar.style.background = '#10b981';
+            text.textContent = 'Strong password';
+        }
+    }
+</script>
 {% endblock %}
