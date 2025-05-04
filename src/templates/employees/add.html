@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="employee-form">
+    <h2>Add New Employee</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="position">Position</label>
+            <input type="text" id="position" name="position" required>
+        </div>
+        <div class="form-group">
+            <label for="salary">Basic Salary</label>
+            <input type="number" id="salary" name="salary" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="joining_date">Joining Date</label>
+            <input type="date" id="joining_date" name="joining_date" required>
+        </div>
+        <div class="salary-section">
+            <h3>Salary Details</h3>
+            <div class="form-group">
+                <label for="base_salary">Base Salary</label>
+                <input type="number" id="base_salary" name="base_salary" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="hra">HRA</label>
+                <input type="number" id="hra" name="hra" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label for="da">DA</label>
+                <input type="number" id="da" name="da" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label for="ta">Travel Allowance</label>
+                <input type="number" id="ta" name="ta" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label for="pf">PF Deduction</label>
+                <input type="number" id="pf" name="pf" step="0.01" value="0">
+            </div>
+            <div class="form-group">
+                <label for="tax">Tax Deduction</label>
+                <input type="number" id="tax" name="tax" step="0.01" value="0">
+            </div>
+        </div>
+        <button type="submit">Add Employee</button>
+    </form>
+</div>
+{% endblock %}

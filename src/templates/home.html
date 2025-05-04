@@ -1,0 +1,35 @@
+
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome to Payroll Management System</h1>
+    {% if session.get('user_id') %}
+        <div class="dashboard-cards">
+            <div class="card">
+                <h3>Employees</h3>
+                <p>Manage employee information</p>
+                <a href="{{ url_for('employee.list') }}" class="btn">View Employees</a>
+            </div>
+            <div class="card">
+                <h3>Attendance</h3>
+                <p>Record and view attendance</p>
+                <a href="{{ url_for('attendance.record') }}" class="btn">Record Attendance</a>
+            </div>
+            <div class="card">
+                <h3>Leave</h3>
+                <p>Manage leave requests</p>
+                <a href="{{ url_for('leave.request_leave') }}" class="btn">Request Leave</a>
+            </div>
+            <div class="card">
+                <h3>Payroll</h3>
+                <p>Process and view payroll</p>
+                <a href="{{ url_for('payroll.calculate') }}" class="btn">Calculate Payroll</a>
+            </div>
+        </div>
+    {% else %}
+        <p>Please <a href="{{ url_for('auth.login') }}">login</a> to access the system.</p>
+    {% endif %}
+</div>
+{% endblock %}

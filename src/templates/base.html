@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payroll Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}">Home</a>
+        {% if session.get('user_id') %}
+            {% if session.get('is_admin') %}
+                <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('employee.list') }}">Employees</a>
+                <a href="{{ url_for('leave.list_requests') }}">Leave Requests</a>
+                <a href="{{ url_for('payroll.calculate') }}">Process Payroll</a>
+            {% else %}
+                <a href="{{ url_for('user.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('attendance.record') }}">Mark Attendance</a>
+                <a href="{{ url_for('leave.request_leave') }}">Request Leave</a>
+            {% endif %}
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Login</a>
+        {% endif %}
+    </nav>
+    <div class="body-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

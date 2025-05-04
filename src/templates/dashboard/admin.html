@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1>Admin Dashboard</h1>
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Total Employees</h3>
+            <p>{{ stats.total_employees }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Today's Attendance</h3>
+            <p>{{ stats.today_attendance }}/{{ stats.total_employees }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Pending Leaves</h3>
+            <p>{{ stats.pending_leaves }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Monthly Payroll</h3>
+            <p>${{ stats.monthly_payroll }}</p>
+        </div>
+    </div>
+    
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('employee.add') }}" class="btn">Add Employee</a>
+            <a href="{{ url_for('leave.list_requests') }}" class="btn">Review Leaves</a>
+            <a href="{{ url_for('payroll.calculate') }}" class="btn">Process Payroll</a>
+            <a href="{{ url_for('attendance.report') }}" class="btn">Attendance Report</a>
+        </div>
+    </div>
+    
+    <div class="recent-activities">
+        <h2>Recent Activities</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Activity</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in activities %}
+                <tr>
+                    <td>{{ activity.timestamp }}</td>
+                    <td>{{ activity.type }}</td>
+                    <td>{{ activity.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
