@@ -22,6 +22,9 @@ class Payroll(db.Model):
         return self.net_salary
 
     def calculate_net_salary_dynamic(self, total_working_days, present_days, leave_days):
+        if total_working_days == 0:
+            raise ValueError("Total working days cannot be zero.")
+        
         daily_salary = self.basic_salary / total_working_days
         leave_deduction = daily_salary * leave_days
         earned_salary = daily_salary * present_days

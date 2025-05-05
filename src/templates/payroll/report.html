@@ -61,10 +61,10 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button class="btn-icon" onclick="viewDetails({{ payroll.id }})">
+                                <button class="btn-icon" onclick="viewDetails('{{ payroll.id }}')" title="View Details">
                                     <i data-feather="eye"></i>
                                 </button>
-                                <button class="btn-icon" onclick="downloadSlip({{ payroll.id }})">
+                                <button class="btn-icon" onclick="downloadSlip('{{ payroll.id }}')" title="Download Payslip">
                                     <i data-feather="download"></i>
                                 </button>
                             </div>

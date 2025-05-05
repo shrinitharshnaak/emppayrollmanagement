@@ -395,7 +395,7 @@
                         <div class="alert alert-{{ category }}">
                             <i data-feather="{{ 'check-circle' if category == 'success' else 'alert-circle' }}"></i>
                             <span>{{ message }}</span>
-                            <button class="alert-close" onclick="this.parentElement.remove()">
+                            <button class="alert-close" title="Close alert" onclick="this.parentElement.remove()">
                                 <i data-feather="x"></i>
                             </button>
                         </div>

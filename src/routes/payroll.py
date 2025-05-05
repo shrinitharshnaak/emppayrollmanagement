@@ -24,9 +24,13 @@ def calculate():
             deductions=float(request.form.get('deductions', 0)),
             additions=float(request.form.get('additions', 0))
         )
-        payroll.calculate_net_salary_dynamic(total_working_days, present_days, leave_days)
-        db.session.add(payroll)
-        db.session.commit()
+        try:
+            payroll.calculate_net_salary_dynamic(total_working_days, present_days, leave_days)
+            db.session.add(payroll)
+            db.session.commit()
+        except ValueError as e:
+            flash(str(e), 'danger')
+            return redirect(url_for('payroll.calculate'))
         
         return redirect(url_for('payroll.report'))
         

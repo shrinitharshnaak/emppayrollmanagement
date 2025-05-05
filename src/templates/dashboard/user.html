@@ -26,7 +26,7 @@
                 <h3>Monthly Attendance</h3>
                 <p class="stat-value">{{ stats.monthly_attendance }} / {{ stats.working_days }}</p>
                 <div class="progress-bar">
-                    <div class="progress" style="width: {{ (stats.monthly_attendance / stats.working_days * 100)|round }}%"></div>
+                    <div class="progress" style="width: {{ ((stats.monthly_attendance / stats.working_days * 100)|round) }}% | safe;"></div>
                 </div>
             </div>
         </div>
