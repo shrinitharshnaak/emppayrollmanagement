@@ -15,5 +15,17 @@ class Attendance(db.Model):
 
     employee = db.relationship('Employee', backref=db.backref('attendances', lazy=True))
 
+    def calculate_status(self):
+        if self.time_out:
+            duration = (self.time_out - self.time_in).total_seconds() / 3600
+            if duration >= 8.0:  # Ensure 8 hours or more for "present"
+                self.status = 'present'
+            elif 4.0 <= duration < 8.0:
+                self.status = 'half-day'
+            else:
+                self.status = 'absent'
+        else:
+            self.status = 'absent'
+
     def __repr__(self):
         return f'<Attendance {self.employee.name} - {self.date}>'

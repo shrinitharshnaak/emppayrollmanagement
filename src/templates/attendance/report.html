@@ -65,6 +65,10 @@
                         <span class="status-badge status-{{ attendance.status }}">
                             {{ attendance.status }}
                         </span>
+                        {% if attendance.time_out %}
+                            {% set duration = (attendance.time_out - attendance.time_in).total_seconds() / 3600 %}
+                            <small>({{ duration|round(2) }} hours)</small>
+                        {% endif %}
                     </td>
                     <td>
                         {% if attendance.time_out %}

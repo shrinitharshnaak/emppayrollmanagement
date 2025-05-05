@@ -40,6 +40,7 @@
                     <th>Check In</th>
                     <th>Check Out</th>
                     <th>Status</th>
+                    <th>Hours Worked</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +50,15 @@
                     <td>{{ record.time_in.strftime('%H:%M:%S') }}</td>
                     <td>{{ record.time_out.strftime('%H:%M:%S') if record.time_out else 'Not checked out' }}</td>
                     <td>{{ record.status }}</td>
+                    <!-- Add a tooltip to show hours worked -->
+                    <td>
+                        {% if record.time_out %}
+                            {% set duration = (record.time_out - record.time_in).total_seconds() / 3600 %}
+                            {{ duration|round(2) }} hours
+                        {% else %}
+                            Not checked out
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

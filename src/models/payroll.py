@@ -15,6 +15,15 @@ class Payroll(db.Model):
 
     employee = db.relationship('Employee', backref=db.backref('payrolls', lazy=True))
 
-    def calculate_net_salary(self):
-        self.net_salary = self.basic_salary + self.additions - self.deductions
+    def calculate_net_salary(self, total_working_days, leave_days):
+        daily_salary = self.basic_salary / total_working_days
+        leave_deduction = daily_salary * leave_days
+        self.net_salary = self.basic_salary + self.additions - (self.deductions + leave_deduction)
+        return self.net_salary
+
+    def calculate_net_salary_dynamic(self, total_working_days, present_days, leave_days):
+        daily_salary = self.basic_salary / total_working_days
+        leave_deduction = daily_salary * leave_days
+        earned_salary = daily_salary * present_days
+        self.net_salary = earned_salary + self.additions - (self.deductions + leave_deduction)
         return self.net_salary

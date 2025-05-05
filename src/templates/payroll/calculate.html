@@ -4,7 +4,7 @@
 <div class="payroll-container">
     <div class="payroll-header">
         <h1>Process Payroll</h1>
-        <p class="subtitle">Calculate employee salaries and process monthly payroll</p>
+        <p class="subtitle">Easily calculate employee salaries with automated attendance integration</p>
     </div>
 
     <div class="payroll-card">
@@ -13,10 +13,10 @@
                 <div class="form-group">
                     <label for="employee_id">Select Employee</label>
                     <div class="select-wrapper">
-                        <select name="employee_id" id="employee_id" required>
-                            <option value="">Choose an employee</option>
+                        <select name="employee_id" id="employee_id" required onchange="fetchAttendanceData()">
+                            <option value="" disabled selected>Choose an employee</option>
                             {% for employee in employees %}
-                            <option value="{{ employee.id }}">{{ employee.name }}</option>
+                            <option value="{{ employee.id }}" data-salary="{{ employee.salary }}">{{ employee.name }}</option>
                             {% endfor %}
                         </select>
                         <i data-feather="chevron-down"></i>
@@ -27,8 +27,8 @@
                     <div class="form-group">
                         <label for="month">Month</label>
                         <div class="select-wrapper">
-                            <select name="month" id="month" required>
-                                <option value="">Select month</option>
+                            <select name="month" id="month" required onchange="fetchAttendanceData()">
+                                <option value="" disabled selected>Select month</option>
                                 <option value="1">January</option>
                                 <option value="2">February</option>
                                 <option value="3">March</option>
@@ -48,26 +48,26 @@
 
                     <div class="form-group">
                         <label for="year">Year</label>
-                        <input type="number" id="year" name="year" required min="2000" max="2099" value="{{ current_year }}">
+                        <input type="number" id="year" name="year" required min="2000" max="2099" value="{{ current_year }}" onchange="fetchAttendanceData()">
                     </div>
                 </div>
 
-                <div class="amount-group">
-                    <div class="form-group">
-                        <label for="deductions">Deductions</label>
-                        <div class="input-icon">
-                            <span class="currency-symbol">$</span>
-                            <input type="number" id="deductions" name="deductions" step="0.01" value="0" min="0">
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="total_working_days">Total Working Days</label>
+                    <input type="number" id="total_working_days" name="total_working_days" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="present_days">Present Days</label>
+                    <input type="number" id="present_days" name="present_days" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="leave_days">Leave Days</label>
+                    <input type="number" id="leave_days" name="leave_days" readonly>
+                </div>
 
-                    <div class="form-group">
-                        <label for="additions">Additions</label>
-                        <div class="input-icon">
-                            <span class="currency-symbol">$</span>
-                            <input type="number" id="additions" name="additions" step="0.01" value="0" min="0">
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label for="net_salary">Net Salary</label>
+                    <input type="number" id="net_salary" name="net_salary" readonly>
                 </div>
             </div>
 
@@ -81,11 +81,21 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/payroll.css') }}">
+{% endblock %}
+
 <style>
     .payroll-container {
-        max-width: 800px;
+        max-width: 900px;
         margin: 2rem auto;
-        padding: 0 1rem;
+        padding: 1.5rem;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
     }
 
     .payroll-header {
@@ -94,9 +104,8 @@
     }
 
     .payroll-header h1 {
-        font-size: 2rem;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+        color: #333;
     }
 
     .subtitle {
@@ -107,24 +116,25 @@
     .payroll-card {
         background: white;
         padding: 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     .form-grid {
         display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
     }
 
     .form-group {
-        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
     }
 
     .form-group label {
-        display: block;
+        font-size: 1rem;
+        color: #555;
         margin-bottom: 0.5rem;
-        color: #374151;
-        font-weight: 500;
     }
 
     .select-wrapper {
@@ -134,10 +144,10 @@
     .select-wrapper select {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
-        appearance: none;
+        border: 1px solid #ccc;
+        border-radius: 8px;
         background: white;
+        font-size: 1rem;
     }
 
     .select-wrapper i {
@@ -145,67 +155,77 @@
         right: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #6b7280;
+        color: #888;
     }
 
-    .date-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+    .form-group input {
+        padding: 0.75rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: #f5f5f5;
     }
 
-    .amount-group {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-
-    .input-icon {
-        position: relative;
-    }
-
-    .currency-symbol {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6b7280;
-    }
-
-    .input-icon input {
-        width: 100%;
-        padding: 0.75rem 1rem 0.75rem 2rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
+    .form-group input[readonly] {
+        background-color: #e9ecef;
+        cursor: not-allowed;
     }
 
     .form-actions {
-        margin-top: 2rem;
         text-align: center;
+        margin-top: 2rem;
     }
 
     .btn-calculate {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: #4f46e5;
+        background-color: #007bff;
         color: white;
+        padding: 0.75rem 1.5rem;
         border: none;
-        border-radius: 0.5rem;
-        font-weight: 500;
+        border-radius: 8px;
+        font-size: 1.1rem;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: background-color 0.3s ease;
     }
 
     .btn-calculate:hover {
-        background: #4338ca;
+        background-color: #0056b3;
     }
 
-    @media (max-width: 640px) {
-        .date-group, .amount-group {
+    @media (max-width: 768px) {
+        .form-grid {
             grid-template-columns: 1fr;
         }
     }
 </style>
-{% endblock %}
+
+<script>
+    async function fetchAttendanceData() {
+        const employeeId = document.getElementById('employee_id').value;
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
+
+        if (employeeId && month && year) {
+            const response = await fetch(`/attendance/summary?employee_id=${employeeId}&month=${month}&year=${year}`);
+            const data = await response.json();
+
+            document.getElementById('total_working_days').value = data.total_working_days;
+            document.getElementById('present_days').value = data.present_days;
+            document.getElementById('leave_days').value = data.leave_days;
+
+            calculateNetSalary(data);
+        }
+    }
+
+    function calculateNetSalary(data) {
+        const basicSalary = parseFloat(document.getElementById('employee_id').selectedOptions[0].dataset.salary || 0);
+        const deductions = parseFloat(document.getElementById('deductions')?.value || 0);
+        const additions = parseFloat(document.getElementById('additions')?.value || 0);
+
+        const dailySalary = basicSalary / data.total_working_days;
+        const earnedSalary = dailySalary * data.present_days;
+        const leaveDeduction = dailySalary * data.leave_days;
+
+        const netSalary = earnedSalary + additions - (deductions + leaveDeduction);
+        document.getElementById('net_salary').value = netSalary.toFixed(2);
+    }
+</script>

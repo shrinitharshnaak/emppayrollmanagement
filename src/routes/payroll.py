@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from ..models.payroll import Payroll
 from ..models.employee import Employee
+from ..routes.attendance import calculate_attendance_summary  # Import the function
 from ..database import db
 from datetime import datetime
 
@@ -14,6 +15,7 @@ def calculate():
         year = int(request.form['year'])
         
         employee = Employee.query.get_or_404(employee_id)
+        total_working_days, present_days, leave_days = calculate_attendance_summary(employee_id, month, year)
         payroll = Payroll(
             employee_id=employee_id,
             month=month,
@@ -22,7 +24,7 @@ def calculate():
             deductions=float(request.form.get('deductions', 0)),
             additions=float(request.form.get('additions', 0))
         )
-        payroll.calculate_net_salary()
+        payroll.calculate_net_salary_dynamic(total_working_days, present_days, leave_days)
         db.session.add(payroll)
         db.session.commit()
         
